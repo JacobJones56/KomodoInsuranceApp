@@ -16,6 +16,7 @@ namespace KomodoInsuranceApp
         
         private DeveloperRepository _developerRepo = new DeveloperRepository();
         private DevTeamRepository _devTeamRepo = new DevTeamRepository();
+        private DevTeams _devTeamsRepo = new DevTeams();
         //Info from Komodo Insurance:
         //Developers have names and ID numbers; we need to be able to identify one developer without mistaking them for another.
         //We also need to know whether or not they have access to the online learning tool: Pluralsight.
@@ -90,6 +91,9 @@ namespace KomodoInsuranceApp
                         RemoveDeveloperFromDevTeam();
                         break;
                     case "11":
+                        DisplayTeams();
+                        break;
+                    case "12":
                         Console.WriteLine("GoodBye!");
                         Thread.Sleep(1000);
                         return;
@@ -112,6 +116,8 @@ namespace KomodoInsuranceApp
             developerTest.LastName = "Jones";
             developerTest.Age = 21;
             developerTest.Pluralsight = true;
+            developerTest.TeamName = "Test";
+
             
             
 
@@ -120,6 +126,7 @@ namespace KomodoInsuranceApp
             developerTest1.LastName = "Person";
             developerTest1.Age = 22;
             developerTest1.Pluralsight = false;
+            developerTest1.TeamName = "Test2";
             _developerRepo.CreateNewDeveloper(developerTest);
             _developerRepo.CreateNewDeveloper(developerTest1);
         }
@@ -128,34 +135,48 @@ namespace KomodoInsuranceApp
         private void CreateNewDeveloper()
         {
             Console.Clear();
-            Developers developerInfo = new Developers();
-            // First name
-            Console.WriteLine("Please input a first Name");
-            developerInfo.FirstName = Console.ReadLine();
-            // Last name
-            Console.WriteLine("Please input a last name");
-            developerInfo.LastName = Console.ReadLine();
-            // Age
-            Console.WriteLine("Please input a age");
-            developerInfo.Age = Int32.Parse(Console.ReadLine());
-            Console.WriteLine("Please press y to get this developer access to Pluralsight\n" +
-               "any other input will result in no access for user");
-            ConsoleKeyInfo info1 = Console.ReadKey();
-            if (info1.Key == ConsoleKey.Y)
+
+            if (_devTeamRepo.GetDevTeamsDirectory().Count > 0)
             {
-                developerInfo.Pluralsight = true;
+
+
+                Developers developerInfo = new Developers();
+                // First name
+                Console.WriteLine("Please input a first Name");
+                developerInfo.FirstName = Console.ReadLine();
+                // Last name
+                Console.WriteLine("Please input a last name");
+                developerInfo.LastName = Console.ReadLine();
+                // Age
+                Console.WriteLine("Please input a age");
+                developerInfo.Age = Int32.Parse(Console.ReadLine());
+                Console.WriteLine("Please input a team name");
+                developerInfo.TeamName = Console.ReadLine();
+                Console.WriteLine("Please press y to get this developer access to Pluralsight\n" +
+                   "any other input will result in no access for user");
+                ConsoleKeyInfo info1 = Console.ReadKey();
+                if (info1.Key == ConsoleKey.Y)
+                {
+                    developerInfo.Pluralsight = true;
+                }
+                _developerRepo.CreateNewDeveloper(developerInfo);
+
+                Console.WriteLine("\nPlease press enter to leave or y to continue inputing entrys");
+                ConsoleKeyInfo info = Console.ReadKey();
+                if (info.Key == ConsoleKey.Enter)
+                {
+                    MainProgram();
+                }
+                if (info.Key == ConsoleKey.Y)
+                {
+                    CreateNewDeveloper();
+                }
+
             }
-            _developerRepo.CreateNewDeveloper(developerInfo);
-            Console.WriteLine("");
-            Console.WriteLine("Please press enter to leave or y to continue inputing entrys");
-            ConsoleKeyInfo info = Console.ReadKey();
-            if (info.Key == ConsoleKey.Enter)
+            else
             {
-                MainProgram();
-            }
-            if (info.Key == ConsoleKey.Y)
-            {
-                CreateNewDeveloper();
+                Console.WriteLine("Please create a devteam before adding a new developer\n" +
+                    "Please press enter to continue");
             }
         }
 
@@ -185,7 +206,7 @@ namespace KomodoInsuranceApp
         private void ShowDevelopersList()
         {
             Console.Clear();
-            foreach (Developers developers in _developerRepo.GetDeveloperList())
+            foreach (Developers developers in _developerRepo.GetDeveloperDirectory())
             {
                 Console.WriteLine("----------------------");
                 Console.WriteLine($"First Name. " + developers.FirstName);
@@ -202,7 +223,7 @@ namespace KomodoInsuranceApp
         private void ShowDevTeamsList()
         {
             Console.Clear();
-            foreach (DevTeams devteam in _devTeamRepo.GetDevTeamsList())
+            foreach (DevTeams devteam in _devTeamRepo.GetDevTeamsDirectory())
             {
                 Console.WriteLine("----------------------");
                 Console.WriteLine("Development Team. " + devteam.TeamId + " " + devteam.TeamName);
@@ -215,11 +236,11 @@ namespace KomodoInsuranceApp
         private void GetIdList()
         {
             Console.Clear();
-            if (_developerRepo.GetDeveloperList().Count > 0)
+            if (_developerRepo.GetDeveloperDirectory().Count > 0)
             {
 
                 Console.WriteLine("All ID numbers in use");
-                foreach (Developers developers in _developerRepo.GetDeveloperList())
+                foreach (Developers developers in _developerRepo.GetDeveloperDirectory())
                 {
                     Console.WriteLine("ID Number. " + developers.Id);
                     Console.WriteLine("Pluralsight access. " + developers.Pluralsight);
@@ -247,11 +268,11 @@ namespace KomodoInsuranceApp
         private void GetDevTeamId()
         {
             Console.Clear();
-            if (_devTeamRepo.GetDevTeamsList().Count > 0)
+            if (_devTeamRepo.GetDevTeamsDirectory().Count > 0)
             {
 
                 Console.WriteLine("all ID numbers in use");
-                foreach (DevTeams devTeams in _devTeamRepo.GetDevTeamsList())
+                foreach (DevTeams devTeams in _devTeamRepo.GetDevTeamsDirectory())
                 {
                     Console.WriteLine("ID Number. " + devTeams.TeamId);
                     Console.WriteLine("Team name. " + devTeams.TeamName);
@@ -347,9 +368,9 @@ namespace KomodoInsuranceApp
                 "Please use the ID number of the team to select");
             int userInput2 = int.Parse(Console.ReadLine());
 
-            Developers developer = _developerRepo.GetDevelopers(userInput2);
+            Developers developer = _developerRepo.GetByIdDevelopers(userInput2);
             //Developers developer = default; 
-            devTeams.AddDevelopersToDevTeam(developer);
+            _devTeamRepo.AddDevelopersToDevTeam(developer);
 
         }
         private void RemoveDeveloperFromDevTeam()
@@ -368,14 +389,22 @@ namespace KomodoInsuranceApp
                 "Please use the ID number of the team to select");
             int userInput2 = int.Parse(Console.ReadLine());
 
-            Developers developer = _developerRepo.GetDevelopers(userInput);
+            Developers developer = _developerRepo.GetByIdDevelopers(userInput);
 
-            devTeams.RemoveDevelopersFromDevTeam(developer);
+            _devTeamRepo.RemoveDevelopersFromDevTeam(developer);
 
         }
         private void DisplayTeams()
         {
-            DevTeams devTeams
+
+            foreach(Developers developer in _devTeamRepo.GetDevsTeamsList())
+            {
+                // Console.WriteLine(_devTeamRepo.Test().TeamName);
+                Console.WriteLine(developer.TeamName);
+                Console.WriteLine("     " +developer.FirstName + " " + developer.LastName + " " + developer.Id);
+
+            }
         }
+        
     }
 }

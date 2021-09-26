@@ -9,6 +9,7 @@ namespace DevTeam
 {
     public class DevTeams
     {
+       
         public List<Developers> DevelopersOnDevTeam { get; set; }
         public string TeamName { get; set; }
         public int TeamId { get; set; }
@@ -26,13 +27,14 @@ namespace DevTeam
            
         }
 
-        public void AddDevelopersToDevTeam(Developers developer)
+        /*public void AddDevelopersToDevTeam(Developers developer)
         {
             this.DevelopersOnDevTeam.Add(developer);
         }
         public void RemoveDevelopersFromDevTeam(Developers developer)
         {
             this.DevelopersOnDevTeam.Remove(developer);
-        }
+        }*/
+
     }
 }

@@ -49,6 +49,10 @@
       <Project>{C65384D1-3B1E-46A2-9655-F0D9D08B7345}</Project>
       <Name>DeveloperRepo</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Developer\Developer.csproj">
+      <Project>{36727091-122C-492F-A53C-94DA40D9CF68}</Project>
+      <Name>Developer</Name>
+    </ProjectReference>
     <ProjectReference Include="..\DevTeam\DevTeam.csproj">
       <Project>{037CC021-7BF9-4DD7-9EFB-1BE1D44D7FE2}</Project>
       <Name>DevTeam</Name>

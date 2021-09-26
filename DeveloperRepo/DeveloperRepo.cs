@@ -19,14 +19,14 @@ namespace DeveloperRepo
             _listOfDevelopers.Add(developer);
         }
         // Read
-        public List<Developers> GetDeveloperList()
+        public List<Developers> GetDeveloperDirectory()
         {
             return _listOfDevelopers;
         }
         // Update
         public bool UpdateExistingDeveloper(int originalId, Developers newId) 
         {
-            Developers oldId = GetDevelopers(originalId);
+            Developers oldId = GetByIdDevelopers(originalId);
 
             if (oldId != null)
             {
@@ -47,7 +47,7 @@ namespace DeveloperRepo
         // Delete
         public bool RemoveDeveloperFromList(int id) 
         {
-            Developers developer = GetDevelopers(id);
+            Developers developer = GetByIdDevelopers(id);
 
             if (developer == null) 
             {
@@ -68,7 +68,7 @@ namespace DeveloperRepo
         }
         // Helper method
 
-        public Developers GetDevelopers(int id)
+        public Developers GetByIdDevelopers(int id)
         {
             
             foreach (Developers developers in _listOfDevelopers) 

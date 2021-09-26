@@ -1,4 +1,6 @@
-﻿using DevTeam;
+﻿using Developer;
+using DeveloperRepo;
+using DevTeam;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +11,8 @@ namespace DevTeamRepo
 {
     public class DevTeamRepository
     {
-        
+        private DeveloperRepository _developer = new DeveloperRepository();
+        private DevTeams devTeams1 = new DevTeams();
         private List<DevTeams> _listOfDevTeams = new List<DevTeams>();
         private int _devTeamIdCounter = default;
         // Create
@@ -18,11 +21,25 @@ namespace DevTeamRepo
             devTeam.TeamId = ++_devTeamIdCounter;
             _listOfDevTeams.Add(devTeam);
         }
+        public void AddNewDeveloperToTeam(int id)
+        {
+           Developers result = _developer.GetByIdDevelopers(id);
+            AddDevelopersToDevTeam(result);
+        }
 
         // Read
-        public List<DevTeams> GetDevTeamsList() 
+        public List<DevTeams> GetDevTeamsDirectory() 
         {
             return _listOfDevTeams;
+        }
+        public List<Developers> GetDevsTeamsList() 
+        {
+            return devTeams1.DevelopersOnDevTeam;
+        }
+
+        public DevTeams Test()
+        {
+            return devTeams1;
         }
 
         // Update
@@ -77,6 +94,15 @@ namespace DevTeamRepo
                 }
             }
             return null;
+        }
+
+        public void AddDevelopersToDevTeam(Developers developer)
+        {
+            devTeams1.DevelopersOnDevTeam.Add(developer);
+        }
+        public void RemoveDevelopersFromDevTeam(Developers developer)
+        {
+            devTeams1.DevelopersOnDevTeam.Remove(developer);
         }
 
     }
